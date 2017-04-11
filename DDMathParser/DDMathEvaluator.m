@@ -28,6 +28,9 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 		_defaultEvaluator = [[DDMathEvaluator alloc] init];
+        
+
+        
     });
 	return _defaultEvaluator;
 }
@@ -37,6 +40,7 @@
 	if (self) {
         _functionMap = [[NSMutableDictionary alloc] init];
         _angleMeasurementMode = DDAngleMeasurementModeRadians;
+        
         _functionEvaluator = [[_DDFunctionEvaluator alloc] initWithMathEvaluator:self];
         _operatorSet = [DDMathOperatorSet defaultOperatorSet];
         

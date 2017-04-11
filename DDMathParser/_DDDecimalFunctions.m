@@ -430,7 +430,10 @@ NSDecimal DDDecimalSin(NSDecimal x) {
     return final;
 }
 
+
 NSDecimal DDDecimalCos(NSDecimal x) {
+    
+    
     // from: http://en.wikipedia.org/wiki/Cotangent#Series_definitions
 	x = DDDecimalMod2Pi(x);
     

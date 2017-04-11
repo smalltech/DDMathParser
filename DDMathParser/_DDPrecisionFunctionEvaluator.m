@@ -763,6 +763,8 @@
 }
 
 - (DDExpression *)dtor:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
+    
+    
 	REQUIRE_N_ARGS(1);
     NSNumber *n = [[self evaluator] evaluateExpression:[arguments objectAtIndex:0] withSubstitutions:variables error:error];
     RETURN_IF_NIL(n);

@@ -17,6 +17,8 @@
 
 
 DDExpression* _DDDTOR(DDExpression *e, DDMathEvaluator *evaluator, NSError **error) {
+    
+    
     DDExpression *final = e;
     if ([evaluator angleMeasurementMode] == DDAngleMeasurementModeDegrees) {
         if ([e expressionType] != DDExpressionTypeFunction || ![[e function] isEqualToString:@"dtor"]) {
