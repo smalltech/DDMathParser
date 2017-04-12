@@ -531,6 +531,9 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
     ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
     if (roundAngleCheckVal==180 && degreeMode)
         result = @(0);
+    //Sinus of pi should be zero
+    else if (roundAngleCheckVal==M_PI && degreeMode==NO)
+        result = @(0);
     else
     {
         e = _DDDTOR(e, [self evaluator], error);
