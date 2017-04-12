@@ -522,35 +522,74 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
 
 - (DDExpression *)sin:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
 	REQUIRE_N_ARGS(1);
+    BOOL degreeMode = self.evaluator.angleMeasurementMode==DDAngleMeasurementModeDegrees;
+    NSNumber *result;
+
     DDExpression *e = [arguments objectAtIndex:0];
-    e = _DDDTOR(e, [self evaluator], error);
-    NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
-    RETURN_IF_NIL(n);
-    
-    NSNumber *result = @(sin([n doubleValue]));
-	return [DDExpression numberExpressionWithNumber:result];
+    double roundAngleCheckVal = [[[self evaluator] evaluateExpression:e withSubstitutions:variables error:error] doubleValue];
+
+    ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
+    if (roundAngleCheckVal==180 && degreeMode)
+        result = @(0);
+    else
+    {
+        e = _DDDTOR(e, [self evaluator], error);
+        NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
+        RETURN_IF_NIL(n);
+        
+        result = @(sin([n doubleValue]));
+    }
+    return [DDExpression numberExpressionWithNumber:result];
 }
 
 - (DDExpression *)cos:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
-	REQUIRE_N_ARGS(1);
-    DDExpression *e = [arguments objectAtIndex:0];
-    e = _DDDTOR(e, [self evaluator], error);
-    NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
-    RETURN_IF_NIL(n);
     
-    NSNumber *result = @(cos([n doubleValue]));
+    REQUIRE_N_ARGS(1);
+    BOOL degreeMode = self.evaluator.angleMeasurementMode==DDAngleMeasurementModeDegrees;
+    NSNumber *result;
+    
+    DDExpression *e = [arguments objectAtIndex:0];
+    double roundAngleCheckVal = [[[self evaluator] evaluateExpression:e withSubstitutions:variables error:error] doubleValue];
+    
+    
+    ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
+    if ((roundAngleCheckVal==90.0 || roundAngleCheckVal==270.0) && degreeMode)
+        result = @(0);
+    else
+    {
+        
+        e = _DDDTOR(e, [self evaluator], error);
+        NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
+        RETURN_IF_NIL(n);
+        result = @(cos([n doubleValue]));
+        
+        //NSLog(@"Double value%f degreeMode:%i result:%@",[n doubleValue], degreeMode, result);
+    }
+    
 	return [DDExpression numberExpressionWithNumber:result];
 }
 
 - (DDExpression *)tan:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
-	REQUIRE_N_ARGS(1);
-    DDExpression *e = [arguments objectAtIndex:0];
-    e = _DDDTOR(e, [self evaluator], error);
-    NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
-    RETURN_IF_NIL(n);
+	
+    REQUIRE_N_ARGS(1);
+    BOOL degreeMode = self.evaluator.angleMeasurementMode==DDAngleMeasurementModeDegrees;
+    NSNumber *result;
     
-    NSNumber *result = @(tan([n doubleValue]));
-	return [DDExpression numberExpressionWithNumber:result];
+    DDExpression *e = [arguments objectAtIndex:0];
+    double roundAngleCheckVal = [[[self evaluator] evaluateExpression:e withSubstitutions:variables error:error] doubleValue];
+
+
+    ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
+    if ((roundAngleCheckVal==180) && degreeMode)
+        result = @(0);
+    else
+    {
+        e = _DDDTOR(e, [self evaluator], error);
+        NSNumber *n = [[self evaluator] evaluateExpression:e withSubstitutions:variables error:error];
+        RETURN_IF_NIL(n);
+        result = @(tan([n doubleValue]));
+    }
+    return [DDExpression numberExpressionWithNumber:result];
 }
 
 - (DDExpression *)asin:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {

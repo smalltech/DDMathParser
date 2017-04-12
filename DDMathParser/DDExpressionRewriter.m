@@ -50,6 +50,8 @@
         
         [self addRewriteRule:@"__exp1" forExpressionsMatchingTemplate:@"dtor(rtod(__exp1))" condition:nil];
         [self addRewriteRule:@"__exp1" forExpressionsMatchingTemplate:@"rtod(dtor(__exp1))" condition:nil];
+
+        
         
         //division
         [self addRewriteRule:@"1" forExpressionsMatchingTemplate:@"__exp1 / __exp1" condition:@"__exp1 != 0"];
