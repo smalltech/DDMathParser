@@ -528,7 +528,7 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
     DDExpression *e = [arguments objectAtIndex:0];
     double roundAngleCheckVal = [[[self evaluator] evaluateExpression:e withSubstitutions:variables error:error] doubleValue];
 
-    ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
+    ///Santiago: UGLY fix / hack so rounding errors don't appear for cos 90 and cos 270
     if (roundAngleCheckVal==180 && degreeMode)
         result = @(0);
     //Sinus of pi should be zero
@@ -558,6 +558,8 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
     ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
     if ((roundAngleCheckVal==90.0 || roundAngleCheckVal==270.0) && degreeMode)
         result = @(0);
+   else if (roundAngleCheckVal==M_PI_2 && degreeMode==NO)
+        result = @(0);
     else
     {
         
@@ -584,6 +586,8 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
 
     ///Santiago: UGLY fix so rounding errors don't appear for cos 90 and cos 270
     if ((roundAngleCheckVal==180) && degreeMode)
+        result = @(0);
+    else if (roundAngleCheckVal==M_PI && degreeMode==NO)
         result = @(0);
     else
     {
