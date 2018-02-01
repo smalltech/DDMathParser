@@ -6,6 +6,9 @@
 //  Copyright 2010 Home. All rights reserved.
 //
 
+#import <mach/mach_time.h>
+
+
 #import "DDMathParser.h"
 #import "_DDFunctionEvaluator.h"
 #import "DDExpression.h"
@@ -170,28 +173,31 @@ static NSString *const _DDFunctionSelectorSuffix = @":variables:error:";
 	return [DDExpression numberExpressionWithNumber:result];
 }
 
+
 - (DDExpression *)factorial:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
-	REQUIRE_N_ARGS(1);
-	NSNumber *firstValue = [[self evaluator] evaluateExpression:[arguments objectAtIndex:0] withSubstitutions:variables error:error];
-	RETURN_IF_NIL(firstValue);
+    REQUIRE_N_ARGS(1);
+    NSNumber *firstValue = [[self evaluator] evaluateExpression:[arguments objectAtIndex:0] withSubstitutions:variables error:error];
+    RETURN_IF_NIL(firstValue);
     
+
     NSNumber *result = nil;
-    
     if (round([firstValue doubleValue]) == [firstValue doubleValue] && [firstValue doubleValue] > 0 && [firstValue doubleValue] < 21) {
         // it's a positive integer whose factorial can be represented in 64-bits
-        // use double type because 13! exceeds unsigned integer maximum of about 4,000 million on 32-bit platforms.
-        //        NSUInteger total = 1;
-        //        NSUInteger integer = [firstValue unsignedIntegerValue];
-        double total = 1;
-        double integer = [firstValue unsignedIntegerValue];
+        NSUInteger total = 1;
+        NSUInteger integer = [firstValue unsignedIntegerValue];
+        
+
         while (integer > 1) {
             total *= integer--;
         }
         result = @(total);
-        
     } else {
+
         result = @(tgamma([firstValue doubleValue]+1));
     }
+    
+
+    
     return [DDExpression numberExpressionWithNumber:result];
 }
 

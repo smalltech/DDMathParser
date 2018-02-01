@@ -82,19 +82,28 @@
 }
 
 - (DDExpression *)factorial:(NSArray *)arguments variables:(NSDictionary *)variables error:(NSError **)error {
+
 	REQUIRE_N_ARGS(1);
 	NSNumber *firstValue = [[self evaluator] evaluateExpression:[arguments objectAtIndex:0] withSubstitutions:variables error:error];
 	RETURN_IF_NIL(firstValue);
     
     NSNumber *result = nil;
+    
+    
+    ///ADDed by Santiago Lema, quick hack to fix hanging with double factor (example "99!!" (would give an error anyway)
+    NSInteger loops  = 0;
+    NSInteger loopsLimit  = 1*1000*1000; //STOP AT ONE MILLION LOOPS (fixes hanging for 99!! aka double Factor with high number)
+
     NSDecimal decimal = [firstValue decimalValue];
     if (DDDecimalIsInteger(decimal)) {
         if (DDDecimalIsNegative(decimal) == NO) {
             NSDecimal total = DDDecimalOne();
             NSDecimal one = DDDecimalOne();
-            while (NSDecimalCompare(&decimal, &one) == NSOrderedDescending /* decimal > 1 */) {
+            while (loops< loopsLimit && NSDecimalCompare(&decimal, &one) == NSOrderedDescending /* decimal > 1 */ ) {
                 total = DDDecimalMultiply(total, decimal);
                 decimal = DDDecimalSubtract(decimal, one);
+                
+                loops++;
             }
             result = [NSDecimalNumber decimalNumberWithDecimal:total];
         } else {
@@ -104,6 +113,9 @@
         result = @(tgamma([firstValue doubleValue]+1));
     }
     
+    
+    //NSLog(@"LOOPs:%zd limit:%zd", loops, loopsLimit);
+    
     return [DDExpression numberExpressionWithNumber:result];
 }
 
