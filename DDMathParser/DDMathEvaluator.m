@@ -88,10 +88,16 @@
     return YES;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
+
 - (void)unregisterFunctionWithName:(NSString *)functionName {
     functionName = [functionName lowercaseString];
     [_functionMap removeObjectForKey:functionName];
 }
+
+#pragma clang diagnostic pop
 
 - (NSArray *)registeredFunctions {
     NSMutableArray *array = [NSMutableArray array];
@@ -284,7 +290,12 @@
     return standardAliases;
 }
 
-#pragma mark - Deprecated Methods
+#pragma mark - Deprecated Methods BUT WITHOUT WARNINGS because I KNOW
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
+
 
 + (id)sharedMathEvaluator {
     return [self defaultMathEvaluator];
@@ -297,5 +308,8 @@
 - (void)addRewriteRule:(NSString *)rule forExpressionsMatchingTemplate:(NSString *)templateString condition:(NSString *)condition {
     [[DDExpressionRewriter defaultRewriter] addRewriteRule:rule forExpressionsMatchingTemplate:templateString condition:condition];
 }
+
+#pragma clang diagnostic pop
+
 
 @end
